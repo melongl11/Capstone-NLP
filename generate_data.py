@@ -1,5 +1,6 @@
 from konlpy.tag import Okt, Kkma
 
+
 kkma = Kkma()
 
 n = 0

@@ -31,10 +31,12 @@ def generate_data(filename):
 
     return result
 
+textset = ['dataset/wikiAB.txt']
 
-result = generate_data('dataset/wikiAA.txt')
+for t in textset:
+    result = generate_data(t)
 
-model = Word2Vec(result, size=100, window=5, min_count=5, workers=4, sg=0)
+    model = Word2Vec(result, size=100, window=5, min_count=5, workers=4, sg=1)
 
-model.save(str(time.time()) + "word2vec.model")
+    model.save(str(time.time()) + "word2vec.model")
 
