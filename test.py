@@ -28,3 +28,5 @@ for i in range(len(idx)):
 
 for i in range(num_clusters):
     print("Cluster ", i, " ", cluster[i])
+
+print(result)

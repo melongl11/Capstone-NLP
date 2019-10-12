@@ -1,4 +1,4 @@
-from konlpy.tag import Okt, Kkma
+from konlpy.tag import Okt, Kkma, Mecab
 from gensim.models import Word2Vec
 import time
 
@@ -31,12 +31,17 @@ def generate_data(filename):
 
     return result
 
-textset = ['dataset/wikiAB.txt']
+textset = ['dataset/wikiAB.txt', 'dataset/wikiAC.txt', 'dataset/wikiAD.txt', 'dataset/wikiAE.txt', 'dataset/wikiAF.txt']
 
+weight = "1570397982.644223word2vec.model"
 for t in textset:
     result = generate_data(t)
 
-    model = Word2Vec(result, size=100, window=5, min_count=5, workers=4, sg=1)
+    model = Word2Vec(size=100, window=5, min_count=5, workers=4, sg=1)
+    model.load(weight)
+    model.build_vocab(result)
+    model.train(result, total_examples=model.corpus_count, epochs=model.iter)
 
+    weight = str(time.time()) + "word2vec.model"
     model.save(str(time.time()) + "word2vec.model")
 
