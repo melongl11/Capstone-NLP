@@ -31,17 +31,33 @@ def generate_data(filename):
 
     return result
 
-textset = ['dataset/wikiAB.txt', 'dataset/wikiAC.txt', 'dataset/wikiAD.txt', 'dataset/wikiAE.txt', 'dataset/wikiAF.txt']
 
-weight = "1570397982.644223word2vec.model"
-for t in textset:
-    result = generate_data(t)
+def read_data(filename):
+    fread = open(filename, encoding='utf8')
 
-    model = Word2Vec(size=100, window=5, min_count=5, workers=4, sg=1)
-    model.load(weight)
-    model.build_vocab(result)
-    model.train(result, total_examples=model.corpus_count, epochs=model.iter)
+    result = []
+    n = 0
+    while True:
+        line = fread.readline()
+        if not line: break
+        n = n + 1
+        if n % 5000 == 0:
+            print("%d 번째 While 문"%n)
+        splitted = line.split(' ')
 
-    weight = str(time.time()) + "word2vec.model"
-    model.save(str(time.time()) + "word2vec.model")
+        result.append(splitted[:len(splitted) - 1])
+
+    return result
+
+result = read_data('dataset/namuwiki_data_khaiii/2/namuwiki_data_khaiii_2.txt')
+
+# initialize train model
+# model = Word2Vec(size=100, window=5, min_count=5, workers=4, sg=1)
+# update model
+model = Word2Vec.load('weight/namuwiki-1.model')
+
+model.build_vocab(result, update=True)
+model.train(result, total_examples=model.corpus_count, epochs=model.iter)
+
+model.save(str(time.time()) + "word2vec.model")
 
