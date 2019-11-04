@@ -68,6 +68,7 @@ def voting_labels(dict_labels):
     labels = labels.apply(lambda x:voting(x), axis=1)
     return labels
 
+
 def ensemble_kmeans(data, n_clusters, n_ensembles):
     generate_kmeans_labels = generate_kmeans(data=data, n_clusters=n_clusters, n_ensembles=n_ensembles)
     hungarian = arranging_kmeans(generate_kmeans_labels)
@@ -76,23 +77,26 @@ def ensemble_kmeans(data, n_clusters, n_ensembles):
     return voted_labels
 
 
-model = Word2Vec.load('weight/namuwiki-2.model')
-result = model.most_similar('안전', topn=90)
+def generate_word(key_word, model_path):
+    model = Word2Vec.load(model_path)
+    result = model.most_similar(key_word, topn=90)
+    word_vectors = []
+    word_names = []
+    for r in result:
+        word_vectors.append(model.wv[r[0]])
+        word_names.append(r[0])
 
-word_vectors = []
-num_clusters = 8
-word_names = []
-for r in result:
-    word_vectors.append(model.wv[r[0]])
-    word_names.append(r[0])
-
-result = ensemble_kmeans(word_vectors, n_clusters=num_clusters, n_ensembles=20)
+    return word_vectors, word_names
 
 
-cluster = [list() for _ in range(num_clusters)]
+def get_cluster(key_word, model_path, n_clusters=8, n_ensembles=30):
+    word_vectors, word_names = generate_word(key_word=key_word, model_path=model_path)
 
-for i in range(len(result)):
-    cluster[result[i]].append(word_names[i])
+    result = ensemble_kmeans(word_vectors, n_clusters=n_clusters, n_ensembles=n_ensembles)
 
-for i in range(num_clusters):
-    print("Cluster ", i, " ", cluster[i])
+    cluster = [list() for _ in range(n_clusters)]
+
+    for i in range(len(result)):
+        cluster[result[i]].append(word_names[i])
+
+    return cluster

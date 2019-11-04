@@ -9,14 +9,15 @@ import pandas as pd
 font_name = fm.FontProperties(fname="c:/Windows/Fonts/malgun.ttf").get_name()
 mpl.rc('font', family=font_name)
 
-model_name = 'weight/1572369367.7740755word2vec.model'
+model_name = 'weight/namuwiki-2.model'
 model = g.Doc2Vec.load(model_name)
 
 word_n = 500
 
 vocab = list(model.wv.vocab)
 X = model[vocab]
-
+print(vocab)
+print(X)
 tsne = TSNE(n_components=2)
 
 X_tsne = tsne.fit_transform(X[:word_n, :])
@@ -32,3 +33,4 @@ ax.scatter(df['x'], df['y'])
 for word, pos in df.iterrows():
     ax.annotate(word, pos, fontsize=10)
 plt.show()
+

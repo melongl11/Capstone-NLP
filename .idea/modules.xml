@@ -3,6 +3,8 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/Capstone-NLP.iml" filepath="$PROJECT_DIR$/.idea/Capstone-NLP.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../Heuristic/.idea/Heuristic.iml" filepath="$PROJECT_DIR$/../Heuristic/.idea/Heuristic.iml" />
+      <module fileurl="file://$USER_HOME$/dev/django/IdeaStation/.idea/IdeaStation.iml" filepath="$USER_HOME$/dev/django/IdeaStation/.idea/IdeaStation.iml" />
       <module fileurl="file://$PROJECT_DIR$/../RML/.idea/RML.iml" filepath="$PROJECT_DIR$/../RML/.idea/RML.iml" />
     </modules>
   </component>
