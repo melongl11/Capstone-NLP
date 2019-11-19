@@ -1,16 +1,36 @@
 from pyclustering.cluster.kmedoids import kmedoids
 from pyclustering.cluster.kmeans import kmeans, kmeans_visualizer
 from pyclustering.cluster.elbow import elbow
-from pyclustering.cluster.center_initializer import kmeans_plusplus_initializer
+from pyclustering.cluster.center_initializer import kmeans_plusplus_initializer, random_center_initializer
 from pyclustering.cluster import cluster_visualizer
 from pyclustering.utils.metric import distance_metric, type_metric
 from gensim.models import Word2Vec
 from sklearn.manifold import TSNE
 from sklearn.decomposition import PCA
 import pandas as pd
+import time
 
 
-model = Word2Vec.load('weight/namuwiki-2.model')
+class Singleton(type):
+    _instances = {"a": 2}
+
+    def __call__(cls, *args, **kwargs):
+        if cls not in cls._instances:
+            cls._instances[cls] = super(Singleton, cls).__call__(*args, **kwargs)
+        return cls._instances[cls]
+
+
+class Logger(metaclass=Singleton):
+    def __init__(self, path):
+        self.model = Word2Vec.load(path)
+
+
+start = time.time()
+logger = Logger('weight/namuwiki-2-window10.model')
+
+model = logger.model
+
+start1 = time.time()
 result = model.most_similar('안전', topn=100)
 
 word_vectors = []
@@ -31,24 +51,17 @@ elbow_instance.process()
 amount_clusters = elbow_instance.get_amount()
 wce = elbow_instance.get_wce()
 
-centers = kmeans_plusplus_initializer(X_tsne, amount_clusters, amount_candidates=kmeans_plusplus_initializer.FARTHEST_CENTER_CANDIDATE).initialize()
+centers = kmeans_plusplus_initializer(X_tsne,
+                                      amount_clusters,
+                                      amount_candidates=kmeans_plusplus_initializer.FARTHEST_CENTER_CANDIDATE).initialize()
+
+# centers = random_center_initializer(X_tsne, amount_clusters).initialize()
+print(centers)
 k_means_instance = kmeans(X_tsne, centers)
 k_means_instance.process()
 
 clusters = k_means_instance.get_clusters()
 centers = k_means_instance.get_centers()
-
-
-init = 0
-initial_medoids = []
-for i in range(amount_clusters):
-    initial_medoids.append(init)
-    init += int(100 / amount_clusters)
-kmedoids_instance = kmedoids(X_tsne, initial_medoids)
-
-kmedoids_instance.process()
-clusters = kmedoids_instance.get_clusters()
-print(clusters)
 
 
 index_to_word = [[] for i in range(num_clusters)]
@@ -62,10 +75,8 @@ for i in range(num_clusters):
     print("Cluster ", i, " ", index_to_word[i])
 print(index_to_word)
 
-
-visualizer = cluster_visualizer()
-visualizer.append_clusters(clusters, X_tsne)
-visualizer.show()
-
 #print(k_means_instance.get_total_wce())
-#kmeans_visualizer.show_clusters(X_tsne, clusters, centers)
+kmeans_visualizer.show_clusters(X_tsne, clusters, centers)
+end = time.time()
+print(end - start, end - start1)
+

@@ -4,5 +4,6 @@
     <mapping directory="" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/../Heuristic" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/../YOLO_v3_pytorch" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/../pytorch_bert" vcs="Git" />
   </component>
 </project>

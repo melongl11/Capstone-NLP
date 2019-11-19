@@ -5,7 +5,7 @@ model = Word2Vec.load('weight/namuwiki-2.model')
 result = model.most_similar('안전', topn=90)
 print(len(model.wv['강아지'])) # 이런 방식으로 각 단어 vector에 접근 가능함.
 print(len(model.wv.syn0[0])) # 해당 모델에서 각 단어의 vector를 가지고 있음. 차원은 n * 100 n=단어 수
-
+print(result)
 word_vectors = []
 num_clusters = 8
 word_names = []
