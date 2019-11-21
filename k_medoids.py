@@ -9,29 +9,15 @@ from sklearn.manifold import TSNE
 from sklearn.decomposition import PCA
 import pandas as pd
 import time
-
-
-class Singleton(type):
-    _instances = {"a": 2}
-
-    def __call__(cls, *args, **kwargs):
-        if cls not in cls._instances:
-            cls._instances[cls] = super(Singleton, cls).__call__(*args, **kwargs)
-        return cls._instances[cls]
-
-
-class Logger(metaclass=Singleton):
-    def __init__(self, path):
-        self.model = Word2Vec.load(path)
-
+import Word2VecSingleton
 
 start = time.time()
-logger = Logger('weight/namuwiki-2-window10.model')
+logger = Word2VecSingleton.Logger('weight/namuwiki-2-window10.model')
 
 model = logger.model
 
 start1 = time.time()
-result = model.most_similar('안전', topn=100)
+result = model.most_similar('강아지', topn=100)
 
 word_vectors = []
 num_clusters = 8

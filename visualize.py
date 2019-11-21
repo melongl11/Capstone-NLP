@@ -1,28 +1,34 @@
 from sklearn.manifold import TSNE
+from sklearn.decomposition import PCA
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 import matplotlib.font_manager as fm
 import gensim
 import gensim.models as g
 import pandas as pd
+import Word2VecSingleton
 
 font_name = fm.FontProperties(fname="c:/Windows/Fonts/malgun.ttf").get_name()
 mpl.rc('font', family=font_name)
 
-model_name = 'weight/namuwiki-2.model'
-model = g.Doc2Vec.load(model_name)
+logger = Word2VecSingleton.Logger('weight/namuwiki-2-window10.model')
+model = logger.model
 
 word_n = 500
 
-vocab = list(model.wv.vocab)
-X = model[vocab]
-print(vocab)
-print(X)
-tsne = TSNE(n_components=2)
+result = model.most_similar('강아지', topn=100)
+word_vectors = []
+num_clusters = 8
+word_names = []
+for r in result:
+    word_vectors.append(model.wv[r[0]])
+    word_names.append(r[0])
 
-X_tsne = tsne.fit_transform(X[:word_n, :])
+tsne = PCA(n_components=2)
 
-df = pd.DataFrame(X_tsne, index=vocab[:word_n], columns=['x', 'y'])
+X_tsne = tsne.fit_transform(word_vectors)
+
+df = pd.DataFrame(X_tsne, index=word_names, columns=['x', 'y'])
 
 fig = plt.figure()
 fig.set_size_inches(20, 20)

@@ -54,3 +54,6 @@ def elbow_k_means(key_word, model_path):
 
 
     return len(clusters), index_to_word, index_to_correlation
+
+
+print(elbow_k_means("사랑", 'weight/wiki.model'))
